@@ -2,20 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Malla Curricular Ingeniería Eléctrica – Univalle</title>
+<title>Malla Curricular – Ingeniería Eléctrica Univalle</title>
 
 <style>
-:root{
-  --ok:#c8e6c9;
-  --lock:#eceff1;
-  --pending:#fffde7;
-  --border:#b0bec5;
-  --primary:#0277bd;
-}
-
 body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:#f4f7f9;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f2f5f7;
   margin:0;
   padding:20px;
 }
@@ -23,50 +15,64 @@ body{
 h1{
   text-align:center;
   color:#263238;
-  margin-bottom:10px;
+}
+
+#progress{
+  max-width:500px;
+  margin:15px auto;
+  text-align:center;
+}
+
+#bar{
+  height:16px;
+  background:#cfd8dc;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+#fill{
+  height:100%;
+  width:0;
+  background:#4db6ac;
+  transition:.3s;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(10,1fr);
-  gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
 }
 
 .sem{
-  background:#ffffff;
-  border-radius:12px;
+  background:white;
+  border-radius:10px;
   padding:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
 
 .sem h3{
   text-align:center;
-  font-size:14px;
   margin:5px 0 10px;
-  color:var(--primary);
+  color:#0277bd;
+  font-size:14px;
 }
 
 .card{
-  border:1px solid var(--border);
-  border-radius:8px;
+  border:1px solid #b0bec5;
+  border-radius:6px;
   padding:6px;
-  margin:6px 0;
+  margin-bottom:6px;
   font-size:12px;
   cursor:pointer;
-  position:relative;
-  background:var(--pending);
-  transition:.2s;
+  background:#fffde7;
 }
 
-.card:hover{transform:scale(1.02)}
-
 .card.approved{
-  background:var(--ok);
-  border-color:#66bb6a;
+  background:#c8e6c9;
 }
 
 .card.locked{
-  background:var(--lock);
+  background:#eceff1;
   cursor:not-allowed;
   opacity:.7;
 }
@@ -74,205 +80,94 @@ h1{
 .card.locked:hover::after{
   content:attr(data-tip);
   position:absolute;
-  bottom:110%;
-  left:50%;
-  transform:translateX(-50%);
   background:#263238;
   color:#fff;
-  padding:6px 8px;
-  border-radius:6px;
+  padding:4px 6px;
   font-size:11px;
-  white-space:nowrap;
-  z-index:10;
+  border-radius:5px;
+  margin-left:5px;
 }
 
-.code{font-weight:bold;color:#37474f}
-.credits{float:right;color:#607d8b}
-
-#progressBox{
-  max-width:600px;
-  margin:20px auto;
-  text-align:center;
-}
-
-#progressText{
-  margin-bottom:6px;
-  color:#37474f;
-  font-size:13px;
-}
-
-#progressBar{
-  background:#cfd8dc;
-  border-radius:20px;
-  height:18px;
-  overflow:hidden;
-}
-
-#progressFill{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#81d4fa,#4db6ac);
-  transition:.4s;
-}
-
-footer{
-  text-align:center;
-  margin-top:20px;
-  color:#607d8b;
-  font-size:12px;
-}
-
-/* RESPONSIVE */
-@media(max-width:1100px){
-  .grid{grid-template-columns:repeat(5,1fr)}
-}
-@media(max-width:800px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:500px){
-  .grid{grid-template-columns:1fr}
-}
+.code{font-weight:bold}
+.cr{float:right;color:#546e7a}
 </style>
 </head>
 
 <body>
 
-<h1>Malla Curricular Interactiva – Ingeniería Eléctrica (Univalle)</h1>
+<h1>Malla Curricular – Ingeniería Eléctrica (Univalle)</h1>
 
-<div id="progressBox">
-  <div id="progressText"></div>
-  <div id="progressBar">
-    <div id="progressFill"></div>
-  </div>
+<div id="progress">
+  <div id="text"></div>
+  <div id="bar"><div id="fill"></div></div>
 </div>
 
 <div class="grid" id="malla"></div>
 
-<footer>✔ Progreso guardado automáticamente en tu navegador</footer>
-
 <script>
-const materias = [
-/* SEMESTRE 1 */
-{id:'111023C',nom:'Matemáticas Básicas',cr:3,sem:1,req:[]},
-{id:'701003C',nom:'Introducción a la Ingeniería',cr:2,sem:1,req:[]},
-{id:'701002C',nom:'Taller de Ingeniería I',cr:3,sem:1,req:[]},
-{id:'701001C',nom:'Inserción a la Vida Universitaria',cr:2,sem:1,req:[]},
-{id:'404002C',nom:'Deporte y Salud',cr:2,sem:1,req:[]},
-{id:'710002C',nom:'Representación Gráfica para IE',cr:3,sem:1,req:[]},
-{id:'710001C',nom:'Electrotecnia',cr:2,sem:1,req:[]},
-
-/* SEMESTRE 2 */
-{id:'111038C',nom:'Álgebra Lineal',cr:3,sem:2,req:['111023C']},
-{id:'106012C',nom:'Física I + Laboratorio',cr:4,sem:2,req:['111023C']},
-{id:'111021C',nom:'Cálculo Monovariable',cr:3,sem:2,req:['111023C']},
-{id:'710024C',nom:'Taller de Ingeniería Eléctrica I',cr:2,sem:2,req:['701002C']},
-{id:'750002C',nom:'Informática I',cr:3,sem:2,req:[]},
-{id:'ELEC1',nom:'Electiva Complementaria I',cr:3,sem:2,req:[]},
-
-/* SEMESTRE 3 */
-{id:'111022C',nom:'Cálculo Multivariable',cr:3,sem:3,req:['111021C']},
-{id:'111026C',nom:'Ecuaciones Diferenciales',cr:3,sem:3,req:['111022C']},
-{id:'710006C',nom:'Redes de Comunicación para IE',cr:3,sem:3,req:['750002C']},
-{id:'106029C',nom:'Física II para IE',cr:3,sem:3,req:['106012C']},
-{id:'710029C',nom:'Taller de Ingeniería Eléctrica II',cr:2,sem:3,req:['710024C']},
-
-/* SEMESTRE 4 */
-{id:'761001C',nom:'Probabilidad y Estadística',cr:3,sem:4,req:['111022C']},
-{id:'710028C',nom:'Electrónica I',cr:2,sem:4,req:['106029C']},
-{id:'710039C',nom:'Análisis de Circuitos Eléctricos I',cr:4,sem:4,req:['111021C','106012C']},
-{id:'710048C',nom:'Transformación de Energías',cr:2,sem:4,req:['710001C']},
-{id:'710057C',nom:'Taller de Ingeniería Eléctrica III',cr:2,sem:4,req:['710029C']},
-{id:'710041C',nom:'Electromagnetismo I',cr:2,sem:4,req:['111022C','106029C']},
-
-/* SEMESTRE 5 */
-{id:'710063C',nom:'Métodos Numéricos Aplicados a IE',cr:2,sem:5,req:['111026C']},
-{id:'710050C',nom:'Mediciones Eléctricas e Instrumentación',cr:3,sem:5,req:['710039C']},
-{id:'710042C',nom:'Análisis de Circuitos Eléctricos II',cr:4,sem:5,req:['710039C']},
-{id:'760016C',nom:'Ingeniería Económica',cr:3,sem:5,req:['761001C']},
-{id:'710068C',nom:'Proyecto de Ingeniería Eléctrica I',cr:3,sem:5,req:['710057C']},
-{id:'710045C',nom:'Electromagnetismo II',cr:3,sem:5,req:['710041C']},
-
-/* SEMESTRE 6 */
-{id:'710037C',nom:'Sistemas y Señales',cr:3,sem:6,req:['111026C']},
-{id:'710067C',nom:'Electrónica II',cr:3,sem:6,req:['710028C']},
-{id:'710051C',nom:'Estado Estacionario SEP',cr:3,sem:6,req:['710042C']},
-{id:'760017C',nom:'Administración de Proyectos',cr:3,sem:6,req:['760016C']},
-{id:'710070C',nom:'Proyecto de Ingeniería Eléctrica II',cr:2,sem:6,req:['710068C']},
-{id:'710046C',nom:'Transformadores',cr:3,sem:6,req:['710042C','710045C']},
-
-/* SEMESTRE 7 */
-{id:'710076C',nom:'Impactos Ambientales',cr:3,sem:7,req:['760017C']},
-{id:'710084C',nom:'Introducción al Control',cr:3,sem:7,req:['710037C']},
-{id:'710080C',nom:'Transmisión de Energía',cr:3,sem:7,req:['710051C']},
-{id:'710079C',nom:'Generación con Fuentes Alternas',cr:3,sem:7,req:['710051C']},
-{id:'710085C',nom:'Proyecto de Ingeniería Eléctrica III',cr:2,sem:7,req:['710070C']},
-{id:'710077C',nom:'Máquinas Rotativas I',cr:3,sem:7,req:['710046C']},
-
-/* SEMESTRE 8 */
-{id:'710089C',nom:'Operación Económica y Mercados',cr:2,sem:8,req:['710080C']},
-{id:'710038C',nom:'Sistemas de Distribución',cr:3,sem:8,req:['710080C']},
-{id:'710094C',nom:'Generación de Energía',cr:3,sem:8,req:['710079C']},
-{id:'710088C',nom:'Proyecto de Ingeniería Eléctrica IV',cr:2,sem:8,req:['710085C']},
-{id:'710090C',nom:'Máquinas Rotativas II',cr:3,sem:8,req:['710077C']},
-{id:'710103C',nom:'Seminario de Trabajo de Grado',cr:2,sem:8,req:['710088C']},
-
-/* SEMESTRE 9 */
-{id:'710102C',nom:'Control de Sistemas Eléctricos',cr:2,sem:9,req:['710084C']},
-{id:'710052C',nom:'Protecciones Eléctricas',cr:3,sem:9,req:['710046C']},
-{id:'TG1',nom:'Trabajo de Grado I',cr:4,sem:9,req:['710103C']},
-
-/* SEMESTRE 10 */
-{id:'TG2',nom:'Trabajo de Grado II',cr:4,sem:10,req:['TG1']}
+const materias=[
+{ id:'MATB', n:'Matemáticas Básicas', c:3, s:1, r:[] },
+{ id:'CAL1', n:'Cálculo Monovariable', c:3, s:2, r:['MATB'] },
+{ id:'CAL2', n:'Cálculo Multivariable', c:3, s:3, r:['CAL1'] },
+{ id:'EDO',  n:'Ecuaciones Diferenciales', c:3, s:3, r:['CAL2'] },
+{ id:'CIR1', n:'Circuitos I', c:4, s:4, r:['CAL1'] },
+{ id:'CIR2', n:'Circuitos II', c:4, s:5, r:['CIR1'] },
+{ id:'ELE1', n:'Electrónica I', c:2, s:4, r:['CIR1'] },
+{ id:'ELE2', n:'Electrónica II', c:3, s:6, r:['ELE1'] },
+{ id:'MAQ1', n:'Máquinas I', c:3, s:7, r:['CIR2'] },
+{ id:'MAQ2', n:'Máquinas II', c:3, s:8, r:['MAQ1'] },
+{ id:'TG1',  n:'Trabajo de Grado I', c:4, s:9, r:['MAQ2'] },
+{ id:'TG2',  n:'Trabajo de Grado II', c:4, s:10, r:['TG1'] }
 ];
 
-const estado = JSON.parse(localStorage.getItem('aprobadas') || '{}');
-const cont = document.getElementById('malla');
-const totalCred = materias.reduce((a,b)=>a+b.cr,0);
+const estado=JSON.parse(localStorage.getItem('ie_estado')||'{}');
+const malla=document.getElementById('malla');
 
-function updateUI(){
-  cont.innerHTML='';
-  const aprob = materias.filter(m=>estado[m.id]);
-  const credAprob = aprob.reduce((a,b)=>a+b.cr,0);
-  const pct = Math.round((credAprob/totalCred)*100);
+function render(){
+  malla.innerHTML='';
+  let total=0, ok=0;
 
-  document.getElementById('progressFill').style.width = pct+'%';
-  document.getElementById('progressText').innerText =
-    `Créditos aprobados: ${credAprob} / ${totalCred} (${pct}%)`;
+  materias.forEach(m=>total+=m.c);
+  materias.forEach(m=>{ if(estado[m.id]) ok+=m.c; });
+
+  let pct=Math.round(ok/total*100);
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('text').innerText=
+    `Créditos aprobados: ${ok} / ${total} (${pct}%)`;
 
   for(let s=1;s<=10;s++){
-    const col=document.createElement('div');
+    let col=document.createElement('div');
     col.className='sem';
     col.innerHTML=`<h3>Semestre ${s}</h3>`;
 
-    materias.filter(m=>m.sem===s).forEach(m=>{
-      const card=document.createElement('div');
+    materias.filter(m=>m.s===s).forEach(m=>{
+      let card=document.createElement('div');
       card.className='card';
-      card.innerHTML=`<span class="code">${m.id}</span> ${m.nom}
-        <span class="credits">${m.cr}</span>`;
+      card.innerHTML=`<span class="code">${m.n}</span><span class="cr">${m.c}</span>`;
 
-      const faltan = m.req.filter(r=>!estado[r]);
+      let faltan=m.r.filter(x=>!estado[x]);
       if(faltan.length){
         card.classList.add('locked');
-        card.dataset.tip='Faltan: '+faltan.join(', ');
+        card.dataset.tip='Requiere: '+faltan.join(', ');
       }
       if(estado[m.id]) card.classList.add('approved');
 
       card.onclick=()=>{
         if(card.classList.contains('locked')) return;
         estado[m.id]=!estado[m.id];
-        localStorage.setItem('aprobadas',JSON.stringify(estado));
-        updateUI();
+        localStorage.setItem('ie_estado',JSON.stringify(estado));
+        render();
       };
 
       col.appendChild(card);
     });
-    cont.appendChild(col);
+
+    if(col.children.length>1) malla.appendChild(col);
   }
 }
 
-updateUI();
+render();
 </script>
 
 </body>
 </html>
-
